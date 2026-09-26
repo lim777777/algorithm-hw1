@@ -1,18 +1,7 @@
 {
-  // C/C++ 확장의 ▶ 버튼을 끈다. 그 버튼은 "활성 파일 빌드"로 파일 하나만
-  // 컴파일해 링크가 실패한다. F5의 구성 목록에서도 그 항목이 사라진다.
-  // 실행은 아래 Code Runner의 ▶ 버튼이 맡는다.
-  "C_Cpp.debugShortcut": false,
-
   // Code Runner — 편집기 오른쪽 위 ▶ 버튼으로 열려 있는 파일 하나를 실행한다.
-  //
-  // 기본 설정을 그대로 쓰면 두 가지가 깨진다.
-  //  - C: `gcc main.c -o main`으로 파일 하나만 컴파일해 링크가 실패한다.
-  //       Makefile의 `%.out` 규칙을 거치게 해 같은 폴더의 .c를 함께 빌드한다.
-  //  - Python: `python`을 찾는데 이미지에는 `python3`만 있다.
+  // 기본 설정의 `python` 대신 이미지에 설치된 `python3`을 사용한다.
   "code-runner.executorMap": {
-    "c": "cd $dir && make -f $workspaceRoot/Makefile $fileNameWithoutExt.out && ./$fileNameWithoutExt.out",
-    "cpp": "cd $dir && make -f $workspaceRoot/Makefile $fileNameWithoutExt.out && ./$fileNameWithoutExt.out",
     "python": "cd $dir && python3 -u $fileName"
   },
   // 터미널에서 돌린다. 출력 패널은 입력을 못 받아 scanf·input()이 멈춘다.
@@ -32,6 +21,5 @@
 
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
-  "[c]": { "editor.tabSize": 4 },
   "[python]": { "editor.tabSize": 4 }
 }
