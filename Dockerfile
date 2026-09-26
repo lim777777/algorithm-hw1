@@ -5,13 +5,11 @@
 # 마운트하므로, 코드는 호스트 편집기로 고치고 실행만 여기서 한다.
 FROM debian:trixie-slim
 
-# build-essential: gcc · make와 표준 라이브러리 헤더
-# gdb: 포인터가 어디를 가리키는지 직접 들여다볼 때
-# python3: 같은 알고리즘의 두 번째 구현
+# Python과 Makefile 기반 실행 환경
 # git, less: Codespaces 터미널에서 저장소를 다루려면 컨테이너 안에도 있어야 한다
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-       build-essential gdb python3 git less ca-certificates \
+       make python3 git less ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /work

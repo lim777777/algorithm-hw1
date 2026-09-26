@@ -17,7 +17,6 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-vscode.cpptools",
         "ms-python.python",
         "ms-python.debugpy",
         "formulahendry.code-runner"
@@ -30,5 +29,5 @@
     }
   },
   // 컨테이너가 준비되면 무엇이 들어 있는지 한 번 찍어 준다.
-  "postCreateCommand": "gcc --version | head -1 && python3 --version"
+  "postCreateCommand": "python3 --version"
 }
