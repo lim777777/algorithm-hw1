@@ -1,8 +1,12 @@
-# algorithm-env
+# 정렬 알고리즘 비교 과제
 
-2026-2 **고급알고리즘**(SIT2001-01)의 **실습 환경 template**입니다.
-컴파일러와 Python이 들어 있는 컨테이너, `src`/`tests` 뼈대, 그리고 그것이
-실제로 도는지 보여 주는 정렬 예제 하나가 들어 있습니다.
+삽입 정렬, 병합 정렬, 힙 정렬을 Python으로 구현하고 비교하는 과제 저장소입니다.
+힙 정렬은 수업에서 배우지 않은 정렬로 선택했습니다.
+
+이 저장소는 2026-2 **고급알고리즘**(SIT2001-01)의 실습 환경 template에서
+시작했습니다.
+
+- 측정 원본: [`report/results.csv`](report/results.csv)
 
 - 강의 자료: [lec-algorithm.github.io/lecture](https://lec-algorithm.github.io/lecture/)
 - 강의 예제 코드: [lec-algorithm/algorithm-code](https://github.com/lec-algorithm/algorithm-code)
@@ -24,7 +28,7 @@
 ## 준비물
 
 **GitHub 계정 하나면 됩니다.** 로컬에서 돌리려면 Git과 Docker가 필요합니다.
-컴파일러와 Python은 컨테이너 이미지 안에 들어 있어 따로 설치하지 않습니다.
+Python은 컨테이너 이미지 안에 들어 있어 따로 설치하지 않습니다.
 
 ## 시작하기 (권장): Codespaces
 
@@ -66,11 +70,12 @@ make run
 - 결과
 
 ```console
-sorted: 1 2 3 4 5 6 7 8 9 10
-sorted: 1 2 3 4 5 6 7 8 9 10
+insertion_sort: 1 2 3 4 5 6 7 8 9 10
+merge_sort    : 1 2 3 4 5 6 7 8 9 10
+heap_sort     : 1 2 3 4 5 6 7 8 9 10
 ```
 
-C와 Python 두 구현이 같은 결과를 냅니다.
+세 구현이 모두 같은 정렬 결과를 냅니다.
 
 ## 테스트
 
@@ -83,16 +88,7 @@ make test
 - 결과
 
 ```console
-ok    섞인 배열
-ok    이미 정렬된 배열
-ok    역순 배열
-ok    중복이 있는 배열
-ok    원소 하나
-ok    빈 배열
-
-6 checks, 0 failures
-...
-Ran 7 tests in 0.001s
+test_sorting_cases (test_sort.TestSortingAlgorithms.test_sorting_cases) ... ok
 
 OK
 ```
@@ -102,11 +98,10 @@ OK
 
 | 명령 | 하는 일 |
 | --- | --- |
-| `make run` | 예제 실행 (C · Python) |
-| `make test` | 유닛 테스트 (C · Python) |
-| `make run-c` · `make run-py` | 한쪽만 실행 |
-| `make test-c` · `make test-py` | 한쪽만 테스트 |
-| `make debug` | 디버그 심볼을 넣어 빌드 |
+| `make run` | Python 예제 실행 |
+| `make test` | Python 유닛 테스트 |
+| `make bench` | Python 구현을 측정해 `report/results.csv` 생성 |
+| `make charts` | 측정 결과에서 SVG 그래프 생성 |
 | `make clean` | 빌드 산출물 정리 |
 
 ## VS Code에서 실행·디버그
@@ -118,83 +113,38 @@ Codespaces나 Dev Containers로 열었다면 편집기에서 바로 됩니다.
 | 파일 하나 실행 | 편집기 오른쪽 위 **▶ 버튼** (Code Runner) |
 | 전체 실행 | `Cmd/Ctrl + Shift + B` (기본 빌드 작업이 `make run`) |
 | 테스트 | 명령 팔레트 → **Tasks: Run Test Task** |
-| C 디버그 | `F5` → **C 디버그 (현재 파일)** |
 | Python 디버그 | `F5` → **Python 디버그 (현재 파일)** |
 
-`F5`를 누르면 빌드가 먼저 돌아 심볼이 있는 바이너리를 만들고 디버거가
-붙습니다. 중단점을 걸고 변수를 들여다볼 수 있습니다.
-
-### 파일 하나만 실행·디버그하기
-
-**C 디버그 (현재 파일)**은 열려 있는 `.c` 파일을 그대로 디버깅합니다. 폴더가
-늘어나도 구성을 새로 만들 필요가 없습니다.
-
-같은 폴더의 `.c`를 함께 링크하므로, 구현이 옆 파일에 있어도 됩니다. 대신
-**한 폴더에 `main`은 하나만** 두세요.
-
-터미널에서 직접 부를 수도 있습니다.
-
-```sh
-make src/main.debug.out && ./src/main.debug.out
-```
+`F5`로 현재 Python 파일에 중단점을 걸고 변수를 확인할 수 있습니다.
 
 ### ▶ 버튼에 대해
 
-편집기 오른쪽 위의 ▶ 버튼은 **Code Runner** 확장이 제공합니다. C든 Python이든
-열려 있는 파일을 그대로 실행합니다.
+편집기 오른쪽 위의 ▶ 버튼은 Code Runner 확장이 제공합니다. Python 파일은
+`python3`로 실행되며 출력은 통합 터미널에 표시됩니다.
 
-두 확장이 각각 ▶ 버튼을 내놓으면 헷갈리므로, C/C++ 확장 쪽은 꺼 두었습니다
-(`C_Cpp.debugShortcut`). 그쪽 버튼은 **파일 하나만** 컴파일해서 이런 오류를
-냅니다.
-
-```console
-undefined reference to `bubbleSort'
-collect2: error: ld returned 1 exit status
-```
-
-Code Runner도 기본 설정 그대로면 같은 문제가 나고, Python은 이미지에 없는
-`python`을 찾습니다. 그래서 `.vscode/settings.json`에서 두 가지를 고쳐
-두었습니다.
-
-- C는 `Makefile`의 `%.out` 규칙을 거쳐 **같은 폴더의 `.c`를 함께** 빌드합니다
-- Python은 `python3`로 실행합니다
-- 출력 패널이 아니라 **터미널**에서 돌립니다. 그래야 `scanf`나 `input()`이 멈추지 않습니다
 
 ## 저장소 구조
 
 ```plaintext
-algorithm-env/
+algorithm-hw1/
 ├── .devcontainer/devcontainer.json  # Codespaces · Dev Containers 설정
 ├── compose.yml                      # 실습 컨테이너 (서비스 이름: lab)
-├── Dockerfile                       # gcc · gdb · make · python3 · git
+├── Dockerfile                       # Python · git 실행 환경
 ├── .vscode/                         # 빌드·디버그 설정 (F5, Cmd+Shift+B)
-├── Makefile                         # run · test · debug · clean
+├── Makefile                         # run · test · bench · charts
+├── report/                          # 보고서 · 측정값 · 그래프
+├── tools/                           # 성능 측정기 · 그래프 생성기
 ├── src/
-│   ├── sort.h · sort.c              # C 구현
-│   ├── main.c                       # C 실행 예제
-│   ├── sort.py                      # Python 구현
-│   └── main.py                      # Python 실행 예제
+│   ├── sort.py                      # 세 정렬 구현
+│   └── main.py                      # 실행 예제
 └── tests/
-    ├── test_sort.c                  # C 유닛 테스트 (표준 C만 사용)
-    └── test_sort.py                 # Python 유닛 테스트 (unittest)
+    └── test_sort.py                 # 단위 테스트
 ```
 
 ## 규약
 
-- **실행 파일은 `*.out`으로 만듭니다.** `.gitignore`가 `*.out`만 걸러내므로,
-  컨테이너에서 컴파일한 Linux 바이너리가 커밋에 섞이지 않습니다.
-- **외부 라이브러리를 쓰지 않습니다.** C는 표준 라이브러리만, Python은 표준
-  모듈만 씁니다. C 테스트도 프레임워크 없이 `assert` 수준으로 직접 씁니다.
-- **C와 Python은 같은 알고리즘을 같은 이름의 함수로 구현합니다.** 언어 차이가
-  알고리즘 차이로 보이지 않게 합니다.
-- 파일명은 각 언어의 관례를 따릅니다. C는 camelCase(`bubbleSort`), Python은
-  snake_case(`bubble_sort`)입니다.
-
-## 자기 코드로 바꾸기
-
-`src`의 버블 정렬은 환경이 도는지 보여 주는 예제일 뿐입니다. 지우고 자기
-코드를 넣으세요. `tests`도 마찬가지입니다. 뼈대(`Makefile`, `src`, `tests`,
-컨테이너 설정)만 남기면 됩니다.
+- 외부 라이브러리 없이 Python 표준 라이브러리만 사용합니다.
+- 함수 이름은 snake_case(`heap_sort`)를 사용합니다.
 
 ## 변경 기록
 
